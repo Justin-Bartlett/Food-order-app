@@ -3,7 +3,7 @@ import { createPortal } from "react-dom"
 
 export default function OrderModal({ open, children }) {
   const dialog = useRef()
-  dialog.current.showModal()
+  //   dialog.current.showModal()
 
   return createPortal(
     <dialog className="dialog" ref={dialog} open={open}>

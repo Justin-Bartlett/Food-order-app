@@ -1,7 +1,11 @@
-import { createContext, useReducer } from "react"
+import { createContext, useReducer, useCallback, useEffect } from "react"
 
-export const FoodOrderContext = CreateContext({
+import { useFetch } from "../hooks/useFetch"
+import { fetchAvailableMeals } from "../http"
+
+export const FoodOrderContext = createContext({
   foodOrder: [],
+  availableMeals: [],
   addMealToOrder: () => {},
   removeMealFromOrder: () => {},
   updateMealQuantity: () => {},
@@ -9,9 +13,35 @@ export const FoodOrderContext = CreateContext({
 
 const foodOrderReducer = (state, action) => {
   switch (action.type) {
+    case "SET_AVAILABLE_MEALS": {
+      return {
+        ...state,
+        availableMeals: action.payload,
+      }
+    }
     case "ADD": {
       const updatedMeals = [...state.foodOrder]
-      return state
+      const meal = state.availableMeals.find(
+        (meal) => meal.id === action.payload,
+      )
+
+      console.log("state.availableMeals: ", state.availableMeals)
+      console.log("UPDATED MEALS: ", updatedMeals)
+      console.log("MEAL: ", meal)
+
+      updatedMeals.push({
+        id: action.payload,
+        name: meal.name,
+        price: meal.price,
+        quantity: 1,
+      })
+
+      console.log("UPDATED MEALS(after push): ", updatedMeals)
+
+      return {
+        ...state,
+        foodOrder: updatedMeals,
+      }
     }
     case "REMOVE": {
       return state
@@ -22,14 +52,33 @@ const foodOrderReducer = (state, action) => {
   }
   return {
     ...state,
-    foodOrder,
+    foodOrder: state.foodOrder,
   }
 }
 
 export default function FoodOrderContextProvider({ children }) {
+  const fetchMeals = useCallback(async () => {
+    const meals = await fetchAvailableMeals()
+    return meals
+  }, [])
+
+  const {
+    isFetching,
+    error,
+    fetchedData: availableMeals,
+  } = useFetch(fetchMeals, [])
+
   const [foodOrderState, foodOrderDispatch] = useReducer(foodOrderReducer, {
     foodOrder: [],
+    availableMeals: availableMeals || [],
   })
+
+  useEffect(() => {
+    foodOrderDispatch({
+      type: "SET_AVAILABLE_MEALS",
+      payload: availableMeals || [],
+    })
+  }, [availableMeals])
 
   function handleAddMealToOrder(id) {
     foodOrderDispatch({
@@ -57,6 +106,7 @@ export default function FoodOrderContextProvider({ children }) {
 
   const ctxValue = {
     foodOrder: foodOrderState.foodOrder,
+    availableMeals: availableMeals || [],
     addMealToOrder: handleAddMealToOrder,
     removeMealFromOrder: handleRemoveMealFromOrder,
     updateMealQuantity: handleUpdateMealQuantity,
