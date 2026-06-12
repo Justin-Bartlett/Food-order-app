@@ -3,7 +3,6 @@ import Meals from "./Meals.jsx"
 import Error from "./Error"
 import { fetchAvailableMeals } from "../http.js"
 import { useFetch } from "../hooks/useFetch.js"
-import FoodOrderContextProvider from "../store/food-order-context.jsx"
 
 async function fetchMeals() {
   const meals = await fetchAvailableMeals()
@@ -29,13 +28,11 @@ export default function AvailableMeals() {
   }
 
   return (
-    <FoodOrderContextProvider>
-      <Meals
-        meals={availableMeals}
-        isLoading={isFetching}
-        loadingText="Fetching meal data..."
-        fallbackText="No meals available."
-      />
-    </FoodOrderContextProvider>
+    <Meals
+      meals={availableMeals}
+      isLoading={isFetching}
+      loadingText="Fetching meal data..."
+      fallbackText="No meals available."
+    />
   )
 }

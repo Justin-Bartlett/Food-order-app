@@ -22,16 +22,28 @@ export default function Meals({
   return (
     <>
       <OrderModal open={modalIsOpen}>
-        <h3>Your Order</h3>
-        <ul className="meals">
-          {foodOrder.map((meal) => (
-            <li key={meal.id} className="meal-item">
-              <p>{meal.title}</p>
-              <p className="meal-item-price">£{meal.price}</p>
-              <p className="meal-item-description">{meal.description}</p>
-            </li>
-          ))}
-        </ul>
+        <div className="cart">
+          <h3>Your Order</h3>
+          <div id="meals">
+            <ul>
+              {foodOrder.map((meal) => (
+                <li key={foodOrder.indexOf(meal)} className="cart-item">
+                  <p>{`${meal.name} - ${meal.quantity} x £${meal.price}`}</p>
+                  <div className="cart-item-actions"></div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p>
+              Total Price: £
+              {foodOrder
+                .reduce((sum, item) => sum + item.price * item.quantity, 0)
+                .toFixed(2)}
+            </p>
+          </div>
+          <button onClick={() => setModalIsOpen(false)}>Close</button>
+        </div>
       </OrderModal>
       <section className="meal-category">
         {isLoading && <p className="fallback-text">{loadingText}</p>}
@@ -39,7 +51,7 @@ export default function Meals({
           <p className="fallback-text">{fallbackText}</p>
         )}
         {!isLoading && meals.length > 0 && (
-          <ul className="meals">
+          <ul id="meals">
             {meals.map((meal) => (
               <li key={meal.id} className="meal-item">
                 <article>

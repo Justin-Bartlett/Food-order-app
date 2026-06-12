@@ -25,16 +25,27 @@ const foodOrderReducer = (state, action) => {
         (meal) => meal.id === action.payload,
       )
 
+      const alreadyOrderedMealIndex = updatedMeals.findIndex(
+        (item) => item.id === action.payload,
+      )
+
       console.log("state.availableMeals: ", state.availableMeals)
       console.log("UPDATED MEALS: ", updatedMeals)
       console.log("MEAL: ", meal)
 
-      updatedMeals.push({
-        id: action.payload,
-        name: meal.name,
-        price: meal.price,
-        quantity: 1,
-      })
+      if (alreadyOrderedMealIndex !== -1) {
+        updatedMeals[alreadyOrderedMealIndex] = {
+          ...updatedMeals[alreadyOrderedMealIndex],
+          quantity: updatedMeals[alreadyOrderedMealIndex].quantity + 1,
+        }
+      } else {
+        updatedMeals.push({
+          id: action.payload,
+          name: meal.name,
+          price: meal.price,
+          quantity: 1,
+        })
+      }
 
       console.log("UPDATED MEALS(after push): ", updatedMeals)
 
