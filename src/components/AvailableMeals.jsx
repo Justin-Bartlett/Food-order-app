@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import Meals from "./Meals.jsx"
 import Error from "./Error"
 import { fetchAvailableMeals } from "../http.js"
 import { useFetch } from "../hooks/useFetch.js"
+import { FoodOrderContext } from "../store/food-order-context.jsx"
 
 async function fetchMeals() {
   const meals = await fetchAvailableMeals()
@@ -10,6 +11,8 @@ async function fetchMeals() {
 }
 
 export default function AvailableMeals() {
+  const {} = useContext(FoodOrderContext)
+
   const {
     isFetching,
     error,
