@@ -1,18 +1,22 @@
-import Meals from "./Meals"
+import { useState, useEffect } from "react"
+import Meals from "./Meals.jsx"
 import Error from "./Error"
-import { fetchAvailableMeals } from "../../http"
-import { useFetch } from "../hooks/useFetch"
+import { fetchAvailableMeals } from "../http.js"
+import { useFetch } from "../hooks/useFetch.js"
 
 async function fetchMeals() {
   const meals = await fetchAvailableMeals()
+  return meals
 }
 
-export default function Meals() {
+export default function AvailableMeals() {
   const {
     isFetching,
     error,
     fetchedData: availableMeals,
   } = useFetch(fetchMeals, [])
+
+  console.log(availableMeals)
 
   if (error) {
     return (

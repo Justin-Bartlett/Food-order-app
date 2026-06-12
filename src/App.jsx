@@ -1,11 +1,16 @@
+import AvailableMeals from "./components/AvailableMeals"
 import Header from "./components/Header"
-import Meals from "./components/Meals"
+import OrderModal from "./components/OrderModal"
+// import Meals from "./components/Meals"
 
 function App() {
   return (
     <>
+      {/* <OrderModal>
+
+    </OrderModal> */}
       <Header />
-      <Meals />
+      <AvailableMeals />
     </>
   )
 }
