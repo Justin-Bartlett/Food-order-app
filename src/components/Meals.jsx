@@ -1,6 +1,7 @@
 import { useState, useContext } from "react"
 import { FoodOrderContext } from "../store/food-order-context"
-import OrderModal from "../components/OrderModal"
+import OrderModal from "./OrderModal"
+import FormModal from "./CheckoutModal"
 
 export default function Meals({
   meals,
@@ -11,40 +12,44 @@ export default function Meals({
   loadingText,
   fallbackText,
 }) {
-  const { addMealToOrder, foodOrder } = useContext(FoodOrderContext)
-  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const { resetFoodOrder, addMealToOrder, removeMealFromOrder, foodOrder } =
+    useContext(FoodOrderContext)
+  const [orderModalIsOpen, setOrderModalIsOpen] = useState(false)
+  const [checkoutModalIsOpen, setCheckoutModalIsOpen] = useState(false)
+  const [successModalIsOpen, setSuccessModalIsOpen] = useState(false)
 
   function handleAddMealToOrder(id) {
+    foodOrder === undefined && resetFoodOrder()
     addMealToOrder(id)
-    setModalIsOpen(true)
+    setOrderModalIsOpen(true)
+  }
+
+  function handleRemoveMealFromOrder(meal) {
+    meal.quantity > 0 && removeMealFromOrder(meal.id)
+    meal.quantity === 1 && setOrderModalIsOpen(false)
+  }
+
+  function handleCheckout() {
+    setOrderModalIsOpen(false)
+    setCheckoutModalIsOpen(true)
   }
 
   return (
     <>
-      <OrderModal open={modalIsOpen}>
-        <div className="cart">
-          <h3>Your Order</h3>
-          <div id="meals">
-            <ul>
-              {foodOrder.map((meal) => (
-                <li key={foodOrder.indexOf(meal)} className="cart-item">
-                  <p>{`${meal.name} - ${meal.quantity} x £${meal.price}`}</p>
-                  <div className="cart-item-actions"></div>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p>
-              Total Price: £
-              {foodOrder
-                .reduce((sum, item) => sum + item.price * item.quantity, 0)
-                .toFixed(2)}
-            </p>
-          </div>
-          <button onClick={() => setModalIsOpen(false)}>Close</button>
-        </div>
-      </OrderModal>
+      <OrderModal
+        foodOrder={foodOrder}
+        setOrderModalIsOpen={setOrderModalIsOpen}
+        orderModalIsOpen={orderModalIsOpen}
+        handleCheckout={handleCheckout}
+        addMealToOrder={addMealToOrder}
+        handleRemoveMealFromOrder={handleRemoveMealFromOrder}
+      />
+      <FormModal
+        foodOrder={foodOrder}
+        checkoutModalIsOpen={checkoutModalIsOpen}
+        setCheckoutModalIsOpen={setCheckoutModalIsOpen}
+      />
+
       <section className="meal-category">
         {isLoading && <p className="fallback-text">{loadingText}</p>}
         {!isLoading && meals.length === 0 && (

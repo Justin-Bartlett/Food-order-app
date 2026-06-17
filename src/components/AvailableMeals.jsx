@@ -16,8 +16,6 @@ export default function AvailableMeals() {
     fetchedData: availableMeals,
   } = useFetch(fetchMeals, [])
 
-  console.log(availableMeals)
-
   if (error) {
     return (
       <Error

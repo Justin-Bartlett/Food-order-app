@@ -6,12 +6,15 @@ import { fetchAvailableMeals } from "../http"
 export const FoodOrderContext = createContext({
   foodOrder: [],
   availableMeals: [],
+  resetFoodOrder: () => {},
   addMealToOrder: () => {},
   removeMealFromOrder: () => {},
   updateMealQuantity: () => {},
 })
 
 const foodOrderReducer = (state, action) => {
+  console.log("foodOrder = : ", state.foodOrder)
+  const updatedMeals = [...state.foodOrder]
   switch (action.type) {
     case "SET_AVAILABLE_MEALS": {
       return {
@@ -19,8 +22,13 @@ const foodOrderReducer = (state, action) => {
         availableMeals: action.payload,
       }
     }
+    case "RESET_FOOD_ORDER": {
+      return {
+        ...state,
+        foodOrder: [],
+      }
+    }
     case "ADD": {
-      const updatedMeals = [...state.foodOrder]
       const meal = state.availableMeals.find(
         (meal) => meal.id === action.payload,
       )
@@ -28,10 +36,6 @@ const foodOrderReducer = (state, action) => {
       const alreadyOrderedMealIndex = updatedMeals.findIndex(
         (item) => item.id === action.payload,
       )
-
-      console.log("state.availableMeals: ", state.availableMeals)
-      console.log("UPDATED MEALS: ", updatedMeals)
-      console.log("MEAL: ", meal)
 
       if (alreadyOrderedMealIndex !== -1) {
         updatedMeals[alreadyOrderedMealIndex] = {
@@ -47,15 +51,36 @@ const foodOrderReducer = (state, action) => {
         })
       }
 
-      console.log("UPDATED MEALS(after push): ", updatedMeals)
-
       return {
         ...state,
         foodOrder: updatedMeals,
       }
     }
     case "REMOVE": {
-      return state
+      const meal = updatedMeals.find((meal) => meal.id === action.payload)
+      console.log("meal.quantity = : ", meal.quantity)
+
+      if (meal.quantity > 1) {
+        const mealToRemoveIndex = updatedMeals.findIndex(
+          (item) => item.id === action.payload,
+        )
+        updatedMeals[mealToRemoveIndex] = {
+          ...updatedMeals[mealToRemoveIndex],
+          quantity: updatedMeals[mealToRemoveIndex].quantity - 1,
+        }
+      } else {
+        const mealsWithOneRemoved = updatedMeals.filter(
+          (meal) => meal.id !== action.payload,
+        )
+        return {
+          ...state,
+          foodOrder: mealsWithOneRemoved,
+        }
+      }
+      return {
+        ...state,
+        foodOrder: updatedMeals,
+      }
     }
     case "UPDATE": {
       return state
@@ -91,6 +116,12 @@ export default function FoodOrderContextProvider({ children }) {
     })
   }, [availableMeals])
 
+  function resetFoodOrder() {
+    foodOrderDispatch({
+      type: "RESET_FOOD_ORDER",
+    })
+  }
+
   function handleAddMealToOrder(id) {
     foodOrderDispatch({
       type: "ADD",
@@ -118,6 +149,7 @@ export default function FoodOrderContextProvider({ children }) {
   const ctxValue = {
     foodOrder: foodOrderState.foodOrder,
     availableMeals: availableMeals || [],
+    resetFoodOrder: resetFoodOrder,
     addMealToOrder: handleAddMealToOrder,
     removeMealFromOrder: handleRemoveMealFromOrder,
     updateMealQuantity: handleUpdateMealQuantity,
