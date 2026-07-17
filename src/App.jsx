@@ -6,11 +6,18 @@ import FoodOrderContextProvider from "./store/food-order-context.jsx"
 
 function App() {
   const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [orderModalIsOpen, setOrderModalIsOpen] = useState(false)
 
   return (
     <FoodOrderContextProvider>
-      <Header />
-      <AvailableMeals />
+      <Header
+      // ordermodalisopen={orderModalIsOpen}
+      // setordermodalisopen={setOrderModalIsOpen}
+      />
+      <AvailableMeals
+      // ordermodalisopen={orderModalIsOpen}
+      // setordermodalisopen={setOrderModalIsOpen}
+      />
     </FoodOrderContextProvider>
   )
 }

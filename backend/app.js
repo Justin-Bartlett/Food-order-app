@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 })
 
 app.get("/meals", async (req, res) => {
-  const fileContent = await fs.readFile("./data/available-meals.json")
+  const fileContent = await fs.readFile("./data/available-meals.json", "utf8")
 
   const mealsData = JSON.parse(fileContent)
 
@@ -56,8 +56,21 @@ app.post("/orders", async (req, res) => {
     ...orderData,
     id: (Math.random() * 1000).toString(),
   }
-  const orders = await fs.readFile("./data/orders.json", "utf8")
-  const allOrders = JSON.parse(orders)
+
+  let allOrders = []
+  try {
+    const orders = await fs.readFile("./data/orders.json", "utf8")
+
+    if (orders.trim()) {
+      const parsedOrders = JSON.parse(orders)
+      allOrders = Array.isArray(parsedOrders) ? parsedOrders : []
+    }
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      await fs.writeFile("./data/orders.json", "[]")
+    }
+  }
+
   allOrders.push(newOrder)
   await fs.writeFile("./data/orders.json", JSON.stringify(allOrders))
   res.status(201).json({ message: "Order created!" })

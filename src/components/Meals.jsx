@@ -1,7 +1,9 @@
 import { useState, useContext } from "react"
 import { FoodOrderContext } from "../store/food-order-context"
+import Button from "./Button"
 import OrderModal from "./OrderModal"
-import FormModal from "./CheckoutModal"
+import CheckoutModal from "./CheckoutModal"
+import OrderPlacedModal from "./OrderPlacedModal"
 
 export default function Meals({
   meals,
@@ -17,6 +19,7 @@ export default function Meals({
   const [orderModalIsOpen, setOrderModalIsOpen] = useState(false)
   const [checkoutModalIsOpen, setCheckoutModalIsOpen] = useState(false)
   const [successModalIsOpen, setSuccessModalIsOpen] = useState(false)
+  const [orderPlacedModalIsOpen, setOrderPlacedModalIsOpen] = useState(false)
 
   function handleAddMealToOrder(id) {
     foodOrder === undefined && resetFoodOrder()
@@ -34,6 +37,16 @@ export default function Meals({
     setCheckoutModalIsOpen(true)
   }
 
+  function handleOrderPlaced() {
+    setCheckoutModalIsOpen(false)
+    setOrderPlacedModalIsOpen(true)
+  }
+
+  function handleFinishOrder() {
+    setOrderPlacedModalIsOpen(false)
+    resetFoodOrder()
+  }
+
   return (
     <>
       <OrderModal
@@ -44,10 +57,16 @@ export default function Meals({
         addMealToOrder={addMealToOrder}
         handleRemoveMealFromOrder={handleRemoveMealFromOrder}
       />
-      <FormModal
+      <CheckoutModal
         foodOrder={foodOrder}
         checkoutModalIsOpen={checkoutModalIsOpen}
         setCheckoutModalIsOpen={setCheckoutModalIsOpen}
+        setOrderPlacedModalIsOpen={setOrderPlacedModalIsOpen}
+        handleOrderPlaced={handleOrderPlaced}
+      />
+      <OrderPlacedModal
+        orderPlacedModalIsOpen={orderPlacedModalIsOpen}
+        handleFinishOrder={handleFinishOrder}
       />
 
       <section className="meal-category">
@@ -62,17 +81,19 @@ export default function Meals({
                 <article>
                   <img
                     src={`http://localhost:3000/${meal.image.src}`}
-                    alt="meal image"
+                    alt={meal.name}
                   />
-                  <h3>{meal.title}</h3>
-                  <p className="meal-item-price">£{meal.price}</p>
-                  <p className="meal-item-description">{meal.description}</p>
-                  <button
-                    className="button meal-item-actions"
-                    onClick={() => handleAddMealToOrder(meal.id)}
-                  >
-                    Add to Order
-                  </button>
+                  <div>
+                    <h3>{meal.name}</h3>
+                    <p className="meal-item-price">£{meal.price}</p>
+                    <p className="meal-item-description">{meal.description}</p>
+                    <Button
+                      className="button meal-item-actions"
+                      onClick={() => handleAddMealToOrder(meal.id)}
+                    >
+                      Add to Order
+                    </Button>
+                  </div>
                 </article>
               </li>
             ))}

@@ -1,6 +1,6 @@
 import { useContext } from "react"
 
-import CartButton from "./CartButton"
+import Button from "./Button"
 import logo from "../assets/logo.jpg"
 import { FoodOrderContext } from "../store/food-order-context"
 
@@ -17,7 +17,13 @@ export default function Header() {
         <img src={logo} alt="logo" />
         <h1>REACTFOOD</h1>
       </div>
-      <CartButton itemsInCart={totalItems > 0 ? totalItems : 0} />
+      <Button
+        // onClick={setOrderModalIsOpen}
+        itemsInCart={totalItems > 0 ? totalItems : 0}
+        textOnly
+      >
+        Cart
+      </Button>
     </header>
   )
 }

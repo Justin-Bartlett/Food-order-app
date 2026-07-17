@@ -116,7 +116,7 @@ export default function FoodOrderContextProvider({ children }) {
     })
   }, [availableMeals])
 
-  function resetFoodOrder() {
+  function handleResetFoodOrder() {
     foodOrderDispatch({
       type: "RESET_FOOD_ORDER",
     })
@@ -149,7 +149,7 @@ export default function FoodOrderContextProvider({ children }) {
   const ctxValue = {
     foodOrder: foodOrderState.foodOrder,
     availableMeals: availableMeals || [],
-    resetFoodOrder: resetFoodOrder,
+    resetFoodOrder: handleResetFoodOrder,
     addMealToOrder: handleAddMealToOrder,
     removeMealFromOrder: handleRemoveMealFromOrder,
     updateMealQuantity: handleUpdateMealQuantity,

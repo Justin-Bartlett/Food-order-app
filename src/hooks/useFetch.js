@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react"
 
 export function useFetch(fetchFn, initialValue) {
-  const [isFetching, setIsFetching] = useState()
+  const [isFetching, setIsFetching] = useState(false)
   const [error, setError] = useState()
   const [fetchedData, setFetchedData] = useState(initialValue)
 
   useEffect(() => {
+    if (!fetchFn) {
+      return
+    }
+
     async function fetchData() {
       setIsFetching(true)
+      setError(null)
+
       try {
         const data = await fetchFn()
         setFetchedData(data)

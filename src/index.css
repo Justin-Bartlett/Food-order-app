@@ -191,6 +191,7 @@ h1 {
 .control label {
   font-weight: bold;
   margin-bottom: 0.5rem;
+  display: block;
 }
 
 .control input {
@@ -265,6 +266,7 @@ h1 {
   background-color: #f9b8b8;
   color: #6d0b0b;
   border-radius: 6px;
+  list-style: none;
 }
 
 .error h2 {
