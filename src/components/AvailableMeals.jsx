@@ -9,7 +9,10 @@ async function fetchMeals() {
   return meals
 }
 
-export default function AvailableMeals() {
+export default function AvailableMeals({
+  ordermodalisopen,
+  setordermodalisopen,
+}) {
   const {
     isFetching,
     error,
@@ -27,6 +30,8 @@ export default function AvailableMeals() {
 
   return (
     <Meals
+      ordermodalisopen={ordermodalisopen}
+      setordermodalisopen={setordermodalisopen}
       meals={availableMeals}
       isLoading={isFetching}
       loadingText="Fetching meal data..."

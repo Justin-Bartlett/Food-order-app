@@ -1,10 +1,10 @@
 import { useContext } from "react"
 
-import Button from "./Button"
+import Button from "./UI/Button"
 import logo from "../assets/logo.jpg"
 import { FoodOrderContext } from "../store/food-order-context"
 
-export default function Header() {
+export default function Header({ ordermodalisopen, setordermodalisopen }) {
   const { foodOrder } = useContext(FoodOrderContext)
   let totalItems
   if (foodOrder && foodOrder.length > 0) {
@@ -18,7 +18,7 @@ export default function Header() {
         <h1>REACTFOOD</h1>
       </div>
       <Button
-        // onClick={setOrderModalIsOpen}
+        onClick={setordermodalisopen}
         itemsInCart={totalItems > 0 ? totalItems : 0}
         textOnly
       >

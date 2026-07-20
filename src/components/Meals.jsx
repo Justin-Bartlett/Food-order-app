@@ -1,11 +1,13 @@
 import { useState, useContext } from "react"
 import { FoodOrderContext } from "../store/food-order-context"
-import Button from "./Button"
 import OrderModal from "./OrderModal"
 import CheckoutModal from "./CheckoutModal"
 import OrderPlacedModal from "./OrderPlacedModal"
+import MealItem from "./MealItem"
 
 export default function Meals({
+  ordermodalisopen,
+  setordermodalisopen,
   meals,
   title,
   price,
@@ -16,7 +18,6 @@ export default function Meals({
 }) {
   const { resetFoodOrder, addMealToOrder, removeMealFromOrder, foodOrder } =
     useContext(FoodOrderContext)
-  const [orderModalIsOpen, setOrderModalIsOpen] = useState(false)
   const [checkoutModalIsOpen, setCheckoutModalIsOpen] = useState(false)
   const [successModalIsOpen, setSuccessModalIsOpen] = useState(false)
   const [orderPlacedModalIsOpen, setOrderPlacedModalIsOpen] = useState(false)
@@ -24,16 +25,16 @@ export default function Meals({
   function handleAddMealToOrder(id) {
     foodOrder === undefined && resetFoodOrder()
     addMealToOrder(id)
-    setOrderModalIsOpen(true)
+    setordermodalisopen(true)
   }
 
   function handleRemoveMealFromOrder(meal) {
     meal.quantity > 0 && removeMealFromOrder(meal.id)
-    meal.quantity === 1 && setOrderModalIsOpen(false)
+    meal.quantity === 1 && setordermodalisopen(false)
   }
 
   function handleCheckout() {
-    setOrderModalIsOpen(false)
+    setordermodalisopen(false)
     setCheckoutModalIsOpen(true)
   }
 
@@ -51,8 +52,8 @@ export default function Meals({
     <>
       <OrderModal
         foodOrder={foodOrder}
-        setOrderModalIsOpen={setOrderModalIsOpen}
-        orderModalIsOpen={orderModalIsOpen}
+        setOrderModalIsOpen={setordermodalisopen}
+        orderModalIsOpen={ordermodalisopen}
         handleCheckout={handleCheckout}
         addMealToOrder={addMealToOrder}
         handleRemoveMealFromOrder={handleRemoveMealFromOrder}
@@ -77,25 +78,11 @@ export default function Meals({
         {!isLoading && meals.length > 0 && (
           <ul id="meals">
             {meals.map((meal) => (
-              <li key={meal.id} className="meal-item">
-                <article>
-                  <img
-                    src={`http://localhost:3000/${meal.image.src}`}
-                    alt={meal.name}
-                  />
-                  <div>
-                    <h3>{meal.name}</h3>
-                    <p className="meal-item-price">£{meal.price}</p>
-                    <p className="meal-item-description">{meal.description}</p>
-                    <Button
-                      className="button meal-item-actions"
-                      onClick={() => handleAddMealToOrder(meal.id)}
-                    >
-                      Add to Order
-                    </Button>
-                  </div>
-                </article>
-              </li>
+              <MealItem
+                key={meal.id}
+                meal={meal}
+                handleAddMealToOrder={handleAddMealToOrder}
+              />
             ))}
           </ul>
         )}
